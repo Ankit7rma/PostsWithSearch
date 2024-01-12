@@ -1,5 +1,4 @@
-// src/App.jsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 const App = () => {
@@ -7,6 +6,7 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [initialPosts, setInitialPosts] = useState([]);
 
   const handleNameSubmit = () => {
     setUserName(document.getElementById("nameInput").value);
@@ -37,7 +37,7 @@ const App = () => {
   };
 
   const handleSearch = () => {
-    const filteredPosts = posts.filter(
+    const filteredPosts = initialPosts.filter(
       (post) =>
         post.message.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.comments.some((comment) =>
@@ -49,15 +49,22 @@ const App = () => {
 
   useEffect(() => {
     setLoading(true);
-    // Simulate loading posts from an API
     setTimeout(() => {
       setLoading(false);
-      setPosts([
+      const initialData = [
         { user: "User1", message: "This is the first post", comments: [] },
         { user: "User2", message: "Another post here", comments: [] },
-      ]);
+      ];
+      setPosts(initialData);
+      setInitialPosts(initialData);
     }, 2000);
   }, []);
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setPosts(initialPosts);
+    }
+  }, [searchTerm, initialPosts]);
 
   return (
     <div className="app-container">
